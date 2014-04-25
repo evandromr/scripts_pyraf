@@ -141,8 +141,8 @@ iraf.apextract.unlearn()
 iraf.apall.unlearn()
 iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
-iraf.apal.readnoise = fits.getval(science[0], 'RDNOISE')
-iraf.apal.gain = fits.getval(science[0], 'GAIN')
+iraf.apall.readnoise = fits.getval(sciences[0], 'RDNOISE')
+iraf.apall.gain = fits.getval(sciences[0], 'GAIN')
 iraf.apall(input=scienceprocstring)
 
 # extract aperture spectra for calibration images
@@ -151,8 +151,8 @@ iraf.apextract.unlearn()
 iraf.apall.unlearn()
 iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
-iraf.apal.readnoise = fits.getval(calses[0], 'RDNOISE')
-iraf.apal.gain = fits.getval(calses[0], 'GAIN')
+iraf.apall.readnoise = fits.getval(calses[0], 'RDNOISE')
+iraf.apall.gain = fits.getval(calses[0], 'GAIN')
 iraf.apall(input=calprocstring)
 
 print 'Combining spectras...'
