@@ -55,6 +55,7 @@ flatsstring = ', '.join(flatses)
 sciencestring = ', '.join(sciences)
 scienceprocstring = ', '.join([sc[:-5] + '_proc.fits' for sc in sciences])
 scienceapalstring = ', '.join([sc[:-5] + '_proc.0001.fits' for sc in sciences])
+sciencespecstring = ', '.join([sc[:-5] + '_spec.fits' for sc in sciences])
 # calibration
 calstring = ', '.join(calses)
 calprocstring = ', '.join([cal[:-5] + '_proc.fits' for cal in calses])
@@ -102,7 +103,7 @@ print ' Running "imexamine" task..'
 iraf.imexamine('Flat', 1)
 
 trimsection = str(raw_input('Enter trim section [col:umns,li:nes],\
-        Or hit <Enter>: '))
+ Or hit <Enter>: '))
 if trimsection == '':
     trimsection = '[{0:d}:{1:d},{0:d}:{2:d}]'.format(
     1, fits.getval(sciences[0], 'NAXIS1'), fits.getval(sciences[0], 'NAXIS2'))
@@ -140,11 +141,9 @@ iraf.apextract.unlearn()
 iraf.apall.unlearn()
 iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
-for science in sciences:
-    insci = science[:-5] + '_proc.fits'
-    iraf.apall.readnoise = fits.getval(science, 'RDNOISE')
-    iraf.apall.gain = fits.getval(science, 'GAIN')
-    iraf.apall(input=insci)
+iraf.apal.readnoise = fits.getval(science[0], 'RDNOISE')
+iraf.apal.gain = fits.getval(science[0], 'GAIN')
+iraf.apall(input=scienceprocstring)
 
 # extract aperture spectra for calibration images
 print 'Extracting aperture spectra for calibration images ...'
@@ -152,11 +151,9 @@ iraf.apextract.unlearn()
 iraf.apall.unlearn()
 iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
-for cal in calses:
-    incal = cal[:-5] + '_proc.fits'
-    iraf.apall.readnoise = fits.getval(cal, 'RDNOISE')
-    iraf.apall.gain = fits.getval(cal, 'GAIN')
-    iraf.apall(input=incal)
+iraf.apal.readnoise = fits.getval(calses[0], 'RDNOISE')
+iraf.apal.gain = fits.getval(calses[0], 'GAIN')
+iraf.apall(input=calprocstring)
 
 print 'Combining spectras...'
 iraf.ccdred.combine.unlearn()
@@ -183,12 +180,11 @@ iraf.onedspec.identify(images='calibration_spectra.fits')
 print "Associating wavelenght with science spectra..."
 iraf.hedit.unlearn()
 iraf.dispcor.unlearn()
-for science in sciences:
-    iraf.hedit.fields = 'REFSPEC1'
-    iraf.hedit.value = 'calibration_spectra'
-    iraf.hedit.add = True
-    iraf.hedit(images=science[:-5] + '_proc.0001.fits')
-    iraf.dispcor(input=science[:-5] + '_proc.0001.fits',
-                 output=science[:-5] + '_spec.fits')
+iraf.hedit.fields = 'REFSPEC1'
+iraf.hedit.value = 'calibration_spectra'
+iraf.hedit.add = True
+iraf.hedit(images=scienceapalstring)
+
+iraf.dispcor(input=scienceapalstring, output=sciencespecstring)
 
 print '--- DONE ---'
