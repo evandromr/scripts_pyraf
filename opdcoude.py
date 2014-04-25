@@ -48,7 +48,7 @@ calses = glob.glob(calre)
 
 ## Transforms python list in strings to be used by pyraf tasks
 # bias
-biasstring += ', '.join(biases)
+biasstring = ', '.join(biases)
 # flat
 flatsstring = ', '.join(flatses)
 # science
@@ -142,8 +142,8 @@ iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
 for science in sciences:
     insci = science[:-5] + '_proc.fits'
-    iraf.apall.readnoise = fits.getval(insci, 'RDNOISE')
-    iraf.apall.gain = fits.getval(insci, 'GAIN')
+    iraf.apall.readnoise = fits.getval(science, 'RDNOISE')
+    iraf.apall.gain = fits.getval(science, 'GAIN')
     iraf.apall(input=insci)
 
 # extract aperture spectra for calibration images
@@ -154,8 +154,8 @@ iraf.apextract.dispaxis = 2
 iraf.apall.format = 'onedspec'
 for cal in calses:
     incal = cal[:-5] + '_proc.fits'
-    iraf.apall.readnoise = fits.getval(incal, 'RDNOISE')
-    iraf.apall.gain = fits.getval(incal, 'GAIN')
+    iraf.apall.readnoise = fits.getval(cal, 'RDNOISE')
+    iraf.apall.gain = fits.getval(cal, 'GAIN')
     iraf.apall(input=incal)
 
 print 'Combining spectras...'
