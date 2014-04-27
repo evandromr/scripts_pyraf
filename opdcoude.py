@@ -29,6 +29,8 @@ iraf.onedspec.identify.unlearn()
 iraf.onedspec.dispcor.unlearn()
 iraf.continuum.unlearn()
 
+iraf.ccdred.instrument = 'coude'
+
 print 'openning a ds9 window if not already openned...'
 ds9.ds9()
 
@@ -164,19 +166,19 @@ iraf.scombine.reject = 'sigclip'
 iraf.scombine.scale = 'exposure'
 iraf.scombine.rdnoise = fits.getval(calses[0], 'RDNOISE')
 iraf.scombine.gain = fits.getval(calses[0], 'GAIN')
-iraf.scombine(input=calapalstring, output='cal_spec_combined.fits')
+iraf.scombine(input=calapalstring, output='calibration_spectra.fits')
 
-print 'Normalizing the calibration spectra...'
-iraf.continuum.unlearn()
-iraf.continuum(input='cal_spec_combined.fits',
-               output='calibration_spectra.fits')
+#print 'Normalizing the calibration spectra...'
+#iraf.continuum.unlearn()
+#iraf.continuum(input='calibration_spectra.fits',
+#               output='calibration_spectra_norm.fits')
 
 print "The next step will ask you to identify lines in the calibration images"
 raw_input("Press any key to continue:")
 
 # make wavelengh solutions
 linelist = str(raw_input('Enter name of iraf file with list \
-                          of lines (linelists$thar.dat): '))
+of lines (linelists$thar.dat): '))
 if linelist == '':
     linelist = 'linelists$thar.dat'
 iraf.onedspec.identify.coordlist = linelist
