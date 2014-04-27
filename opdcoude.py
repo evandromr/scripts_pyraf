@@ -155,7 +155,7 @@ iraf.apall.readnoise = fits.getval(calses[0], 'RDNOISE')
 iraf.apall.gain = fits.getval(calses[0], 'GAIN')
 iraf.apall(input=calprocstring)
 
-print 'Combining spectras...'
+print 'Combining calibration spectras...'
 iraf.ccdred.combine.unlearn()
 iraf.ccdred.ccdproc.unlearn()
 iraf.scombine.group = 'all'
@@ -164,7 +164,12 @@ iraf.scombine.reject = 'sigclip'
 iraf.scombine.scale = 'exposure'
 iraf.scombine.rdnoise = fits.getval(calses[0], 'RDNOISE')
 iraf.scombine.gain = fits.getval(calses[0], 'GAIN')
-iraf.scombine(input=calapalstring, output='calibration_spectra.fits')
+iraf.scombine(input=calapalstring, output='cal_spec_combined.fits')
+
+print 'Normalizing the calibration spectra...'
+iraf.continuum.unlearn()
+iraf.continuum(input='cal_spec_combined.fits',
+               output='calibration_spectra.fits')
 
 print "The next step will ask you to identify lines in the calibration images"
 raw_input("Press any key to continue:")
