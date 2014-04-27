@@ -67,7 +67,7 @@ iraf.ccdred.ccdproc.unlearn()
 iraf.ccdred.combine.unlearn()
 iraf.ccdred.zerocombine.unlearn()
 iraf.ccdred.zerocombine.output = 'Zero'
-iraf.ccdred.zerocombine.combine = 'median'
+iraf.ccdred.zerocombine.combine = 'average'
 iraf.ccdred.zerocombine.reject = 'sigclip'
 iraf.ccdred.zerocombine.ccdtype = ''
 iraf.ccdred.zerocombine.rdnoise = fits.getval(biases[0], 'RDNOISE')
@@ -86,7 +86,7 @@ iraf.ccdred.ccdproc.unlearn()
 iraf.ccdred.combine.unlearn()
 iraf.ccdred.flatcombine.unlearn()
 iraf.ccdred.flatcombine.output = 'Flat'
-iraf.ccdred.flatcombine.combine = 'median'
+iraf.ccdred.flatcombine.combine = 'average'
 iraf.ccdred.flatcombine.reject = 'sigclip'
 iraf.ccdred.flatcombine.process = 'no'
 iraf.ccdred.flatcombine.subsets = 'no'
@@ -159,7 +159,7 @@ print 'Combining calibration spectras...'
 iraf.ccdred.combine.unlearn()
 iraf.ccdred.ccdproc.unlearn()
 iraf.scombine.group = 'all'
-iraf.scombine.combine = 'median'
+iraf.scombine.combine = 'average'
 iraf.scombine.reject = 'sigclip'
 iraf.scombine.scale = 'exposure'
 iraf.scombine.rdnoise = fits.getval(calses[0], 'RDNOISE')
