@@ -6,7 +6,6 @@ import glob
 from pyraf import iraf
 
 iraf.onedspec()
-iraf.onedspec.unlearn()
 iraf.onedspec.identify.unlearn()
 
 re = str(raw_input("Enter regular expression for input spectra: "))
