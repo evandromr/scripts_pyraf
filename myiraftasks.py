@@ -52,8 +52,10 @@ def masterbias(biasre, combine='average', reject='minmax', out='Zero'):
     iraf.ccdred.ccdproc.unlearn()
     iraf.ccdred.combine.unlearn()
     iraf.ccdred.zerocombine.unlearn()
+    iraf.ccdred.setinstrument.unlearn()
     # setup task
-    iraf.ccdred.ccdproc.instrument = 'coude'
+    iraf.ccdred.setinstrument.review = False                                        
+    iraf.ccdred.setinstrument(instrument='coude')
     iraf.ccdred.zerocombine.output = out
     iraf.ccdred.zerocombine.combine = combine
     iraf.ccdred.zerocombine.reject = reject
@@ -97,7 +99,10 @@ def masterflat(flatre, combine='median', reject='sigclip', out='Flat',
     iraf.ccdred.ccdproc.unlearn()
     iraf.ccdred.combine.unlearn()
     iraf.ccdred.flatcombine.unlearn()
+    iraf.ccdred.setinstrument.unlearn()
     # setup task
+    iraf.ccdred.setinstrument.review = False                                        
+    iraf.ccdred.setinstrument(instrument='coude')
     iraf.ccdred.ccdproc.instrument = 'coude'
     iraf.ccdred.flatcombine.output = out
     iraf.ccdred.flatcombine.combine = combine
@@ -127,7 +132,10 @@ def correctimages(imagesre, zero='Zero', flat='Flat'):
 
     iraf.ccdred.ccdproc.unlearn()
     iraf.ccdred.combine.unlearn()
-    iraf.ccdred.ccdproc.instrument = 'coude'
+    iraf.ccdred.setinstrument.unlearn()                                             
+    
+    iraf.ccdred.setinstrument.review = False                                        
+    iraf.ccdred.setinstrument(instrument='coude')
 
     iraf.ccdred.ccdproc.ccdtype = ''
     iraf.ccdred.ccdproc.noproc = False
