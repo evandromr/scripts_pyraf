@@ -29,14 +29,13 @@ iraf.onedspec.identify.unlearn()
 iraf.onedspec.dispcor.unlearn()
 iraf.continuum.unlearn()
 
+# define instrument parameter for ccdred (see iraf tasks documentation)
 iraf.ccdred.instrument = 'coude'
 
 print 'openning a ds9 window if not already openned...'
 ds9.ds9()
 
 # regular expression of files (e.g bias_00*.fits, flat-2000jan01_?.*)
-# if files in different folder, one can use the directory as part of the
-# regular expresion e.g. /biasimages/bias_00??.fits
 biasre = str(raw_input('\nEnter regular expression for Bias images: '))
 flatsre = str(raw_input('Enter regular expression for Flat images: '))
 sciencere = str(raw_input('Enter regular expression for Science images: '))
@@ -49,17 +48,15 @@ sciences = glob.glob(sciencere)
 calses = glob.glob(calre)
 
 ## Transforms python list in strings to be used by pyraf tasks
-# bias
 biasstring = ', '.join(biases)
-# flat
 flatsstring = ', '.join(flatses)
-# science
 sciencestring = ', '.join(sciences)
+calstring = ', '.join(calses)
+# other science lists
 scienceprocstring = ', '.join([sc[:-5] + '_proc.fits' for sc in sciences])
 scienceapalstring = ', '.join([sc[:-5] + '_proc.0001.fits' for sc in sciences])
 sciencespecstring = ', '.join([sc[:-5] + '_spec.fits' for sc in sciences])
-# calibration
-calstring = ', '.join(calses)
+# other calibration lists
 calprocstring = ', '.join([cal[:-5] + '_proc.fits' for cal in calses])
 calapalstring = ', '.join([cal[:-5] + '_proc.0001.fits' for cal in calses])
 
@@ -70,7 +67,7 @@ iraf.ccdred.combine.unlearn()
 iraf.ccdred.zerocombine.unlearn()
 iraf.ccdred.zerocombine.output = 'Zero'
 iraf.ccdred.zerocombine.combine = 'average'
-iraf.ccdred.zerocombine.reject = 'sigclip'
+iraf.ccdred.zerocombine.reject = 'minmax'
 iraf.ccdred.zerocombine.ccdtype = ''
 iraf.ccdred.zerocombine.rdnoise = fits.getval(biases[0], 'RDNOISE')
 iraf.ccdred.zerocombine.gain = fits.getval(biases[0], 'GAIN')
@@ -88,7 +85,7 @@ iraf.ccdred.ccdproc.unlearn()
 iraf.ccdred.combine.unlearn()
 iraf.ccdred.flatcombine.unlearn()
 iraf.ccdred.flatcombine.output = 'Flat'
-iraf.ccdred.flatcombine.combine = 'average'
+iraf.ccdred.flatcombine.combine = 'median'
 iraf.ccdred.flatcombine.reject = 'sigclip'
 iraf.ccdred.flatcombine.process = 'no'
 iraf.ccdred.flatcombine.subsets = 'no'
@@ -104,8 +101,9 @@ iraf.imstatistics('Flat')
 print ' Running "imexamine" task..'
 iraf.imexamine('Flat', 1)
 
-trimsection = str(raw_input('Enter trim section [col:umns,li:nes],\
- Or hit <Enter>: '))
+trimsection = str(raw_input(
+'Enter trim section [col:umns,li:nes], Or hit <Enter>: '))
+
 if trimsection == '':
     trimsection = '[{0:d}:{1:d},{0:d}:{2:d}]'.format(
     1, fits.getval(sciences[0], 'NAXIS1'), fits.getval(sciences[0], 'NAXIS2'))
@@ -132,8 +130,10 @@ iraf.ccdred.ccdproc.zerocor = True
 iraf.ccdred.ccdproc.zero = 'Zero'
 iraf.ccdred.ccdproc.flatcor = True
 iraf.ccdred.ccdproc.flat = 'Flat'
+# science images
 iraf.ccdred.ccdproc.output = scienceprocstring
 iraf.ccdred.ccdproc(images=sciencestring)
+# calibration images (same parameters)
 iraf.ccdred.ccdproc.output = calprocstring
 iraf.ccdred.ccdproc(images=calstring)
 
@@ -156,42 +156,5 @@ iraf.apall.format = 'onedspec'
 iraf.apall.readnoise = fits.getval(calses[0], 'RDNOISE')
 iraf.apall.gain = fits.getval(calses[0], 'GAIN')
 iraf.apall(input=calprocstring)
-
-print 'Combining calibration spectras...'
-iraf.ccdred.combine.unlearn()
-iraf.ccdred.ccdproc.unlearn()
-iraf.scombine.group = 'all'
-iraf.scombine.combine = 'average'
-iraf.scombine.reject = 'sigclip'
-iraf.scombine.scale = 'exposure'
-iraf.scombine.rdnoise = fits.getval(calses[0], 'RDNOISE')
-iraf.scombine.gain = fits.getval(calses[0], 'GAIN')
-iraf.scombine(input=calapalstring, output='calibration_spectra.fits')
-
-#print 'Normalizing the calibration spectra...'
-#iraf.continuum.unlearn()
-#iraf.continuum(input='calibration_spectra.fits',
-#               output='calibration_spectra_norm.fits')
-
-print "The next step will ask you to identify lines in the calibration images"
-raw_input("Press any key to continue:")
-
-# make wavelengh solutions
-linelist = str(raw_input('Enter name of iraf file with list \
-of lines (linelists$thar.dat): '))
-if linelist == '':
-    linelist = 'linelists$thar.dat'
-iraf.onedspec.identify.coordlist = linelist
-iraf.onedspec.identify(images='calibration_spectra.fits')
-
-print "Associating wavelenght with science spectra..."
-iraf.hedit.unlearn()
-iraf.dispcor.unlearn()
-iraf.hedit.fields = 'REFSPEC1'
-iraf.hedit.value = 'calibration_spectra'
-iraf.hedit.add = True
-iraf.hedit(images=scienceapalstring)
-
-iraf.dispcor(input=scienceapalstring, output=sciencespecstring)
 
 print '--- DONE ---'
