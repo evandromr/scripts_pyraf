@@ -28,7 +28,7 @@ if (check == 'Y') or (check == 'y'):
     gain = float(raw_input("Enter Gain: "))
 else:
     rdnoise = fits.getval(specfiles[0], 'RDNOISE')
-    gain - fits.getval(specfiles[0], 'GAIN')
+    gain = fits.getval(specfiles[0], 'GAIN')
 
 # setup
 iraf.scombine.group = 'all'
