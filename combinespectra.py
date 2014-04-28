@@ -27,7 +27,7 @@ if (check == 'Y') or (check == 'y'):
     rdnoise = float(raw_input("Enter ReadOutNoise: "))
     gain = float(raw_input("Enter Gain: "))
 else:
-    rdnoise = fits.getval(specfiles[0], 'READNOISE')
+    rdnoise = fits.getval(specfiles[0], 'RDNOISE')
     gain - fits.getval(specfiles[0], 'GAIN')
 
 # setup
