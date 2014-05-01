@@ -15,7 +15,7 @@ imageslist = glob.glob(imagesre)
 imagesin = ', '.join(imageslist)
 imagesout = ', '.join([img[:-5]+'_trimed.fits' for img in imageslist])
 
-trimsection = str(raw_input('Enter trim section (or Hit <Enter>): '))
+trimsection = str(raw_input('Enter trim section: '))
 
 iraf.ccdred.ccdproc.unlearn()
 iraf.ccdred.combine.unlearn()
