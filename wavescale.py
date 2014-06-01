@@ -8,8 +8,7 @@ from pyraf import iraf
 iraf.onedspec()
 iraf.onedspec.identify.unlearn()
 
-re = str(raw_input("Enter regular expression for input spectra: "))
-calspec = glob.glob(re)[0]
+calspec = str(raw_input("Enter input spectra: "))
 
 linelist = str(raw_input(
 'Enter name of iraf file with list of lines (linelists$thar.dat): '))

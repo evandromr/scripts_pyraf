@@ -20,6 +20,8 @@ specout = str(raw_input("Enter output combined spectra name: "))
 iraf.scombine.unlearn()
 
 # setup
+iraf.scombine.combine = 'median'
+iraf.scombine.reject = 'sigclip'
 iraf.scombine.scale = 'exposure'
 iraf.scombine.rdnoise = 'rdnoise'
 iraf.scombine.gain = 'gain'

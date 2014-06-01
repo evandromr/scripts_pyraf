@@ -11,6 +11,6 @@ out = str(raw_input("Enter name of ouput normalized spectra: "))
 
 iraf.continuum.function = 'spline3'
 iraf.continuum.order = 1
-iraf.continuum.low_reject = 2.0
-iraf.continuum.high_reject = 4.0
+iraf.continuum.low_reject = 3.0
+iraf.continuum.high_reject = 3.0
 iraf.continuum(input=spec, output=out)
